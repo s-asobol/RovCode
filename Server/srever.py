@@ -1,4 +1,5 @@
 import socket
+import time
 
 HOST = "localhost"
 PORT = 5000
@@ -16,5 +17,10 @@ serverSocket, clientAdress = listenSocket.accept()
 print(f"server accepted connection from {clientAdress}")
 
 while True:
-    data = serverSocket.recv(BUFFER_SIZE)
+    data = serverSocket.recv(BUFFER_SIZE).decode()
     print(data)
+    testArr = data.split(",")
+    #for s in testArr:
+        
+    time.sleep(1)
+    

@@ -2,8 +2,10 @@ import pygame
 import sys
 pygame.init()
 import socket 
+import time
 
-HOST = "localhost"
+
+HOST = "192.168.1.11"
 PORT = 5000
 
 BUFFER_SIZE = 1024
@@ -11,24 +13,41 @@ BUFFER_SIZE = 1024
 clientSocket = socket.socket()
 clientSocket.connect((HOST, PORT))
 
+#takse input value from -1 to 1 and converts it to 0 to 255
+def joystickToInt(axis):
+    axis += 1.0
+    axis *= 128
+    if (axis > 255):
+        axis = 255 
+    return int (axis)
 
 # controller inpuut stuff
 run = True
 pygame.joystick.init()
 joysticks = []
 
+# waits until joystick is added
+# adds joystic to joystic array when plugged in 
+#
+
+        
 while run:
-
+    sendString = None
     for joystick in joysticks:
-        #print(str(joystick.get_name()))
+    #read input from controller
+        LeftX = joystickToInt(joystick.get_axis(0))
+        LeftY = joystickToInt(joystick.get_axis(1))
+        RightX = joystickToInt(joystick.get_axis(2))
+        RightY = joystickToInt(joystick.get_axis(3))
+        LeftTrigger = joystickToInt(joystick.get_axis(4))
+        RightTrigger = joystickToInt(joystick.get_axis(5))
+        sendString = f"{LeftX},{LeftY},{RightX},{RightY},{LeftTrigger},{RightTrigger}"
+    #makes sure the string is not null. Can happen on startup
+    if sendString:
+        clientSocket.sendall(sendString.encode())
 
-        horiz_move = joystick.get_axis(2)
-        vert_move = joystick.get_axis(3)
-        if (abs(horiz_move) > 0.05):
-            clientSocket.sendall(f"Horiz: {horiz_move}".encode())
-        if (abs(vert_move) > 0.05):
-            clientSocket.sendall(f"Vert: {vert_move}".encode())
-    
+    time.sleep(1)
+
     for event in pygame.event.get():
 
         if event.type == pygame.JOYDEVICEADDED:
@@ -39,3 +58,8 @@ while run:
 
         if event.type == pygame.QUIT:
             run = False
+
+
+
+
+    

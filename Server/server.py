@@ -22,7 +22,7 @@ while True:
     testArr = data.split(",")
     if (len(testArr) >= 6):
         data = f"LeftX: {testArr[0]}, LeftY: {testArr[1]}, RightX: {testArr[2]}, RightY: {testArr[3]}, leftTrigger: {testArr[4]}, RightTrigger: {testArr[5]}"
-    os.system("cls")
+    os.system("clear")
     print(data)
     
     #for s in testArr:

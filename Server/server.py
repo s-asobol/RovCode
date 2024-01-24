@@ -1,7 +1,7 @@
 import socket
 import time
 
-HOST = "localhost"
+HOST = socket.gethostbyname(socket.gethostname())
 PORT = 5000
 
 BUFFER_SIZE = 1024

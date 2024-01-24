@@ -45,7 +45,6 @@ while run:
     #makes sure the string is not null. Can happen on startup
     if sendString:
         clientSocket.sendall(sendString.encode())
-    clientSocket.sendall("poop".encode())
     time.sleep(1)
 
     for event in pygame.event.get():

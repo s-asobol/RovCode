@@ -1,5 +1,6 @@
 import socket
 import time
+import os 
 
 HOST = "192.168.1.11"
 PORT = 5000
@@ -18,8 +19,12 @@ print(f"server accepted connection from {clientAdress}")
 
 while True:
     data = serverSocket.recv(BUFFER_SIZE).decode()
-    print(data)
     testArr = data.split(",")
+    if (testArr.len()):
+        data = f"LeftX: {testArr[0]}, LeftY: {testArr[1]}, RightX: {testArr[2]}, RightY: {testArr[3]}, leftTrigger: {testArr[4]}, RightTrigger: {testArr[5]}"
+    os.system("cls")
+    print(data)
+    
     #for s in testArr:
         
     time.sleep(1)

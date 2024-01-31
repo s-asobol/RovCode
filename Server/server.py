@@ -58,9 +58,9 @@ while True:
     print(data)
     #pcaScenario()
     pca.continuous_servo[8].throttle = .5
-    time.sleep(10)
+    time.sleep(5)
     pca.continuous_servo[8].throttle = 0
     #for s in testArr:
         
-    time.sleep(1)
+    time.sleep(5)
     

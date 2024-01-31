@@ -15,7 +15,7 @@ pca = ServoKit(channels=16)
 # function init 
 def init():
     i = 8
-    pca.servo[i].set_pulse_width_range(MIN_IMP[i] , MAX_IMP[i])
+    pca.continuous_servo[i].set_pulse_width_range(MIN_IMP[i] , MAX_IMP[i])
 
 HOST = "192.168.1.11"
 PORT = 5000
@@ -39,11 +39,11 @@ def pcaScenario():
     for i in range(nbPCAServo):
         for j in range(MIN_ANG[i],MAX_ANG[i],1):
             print("Send angle {} to Servo {}".format(j,i))
-            pca.servo[i].angle = j
+            pca.continuous_servo[i].angle = j
             time.sleep(0.01)
         for j in range(MAX_ANG[i],MIN_ANG[i],-1):
             print("Send angle {} to Servo {}".format(j,i))
-            pca.servo[i].angle = j
+            pca.continuous_servo[i].angle = j
             time.sleep(0.01)
         pca.servo[i].angle=None #disable channel
         time.sleep(0.5)
@@ -57,9 +57,9 @@ while True:
     os.system("clear")
     print(data)
     #pcaScenario()
-    pca.servo[8]._pwm_out
+    pca.continuous_servo[8].throttle = .5
     time.sleep(10)
-    pca.servo[8]._pwm = 0
+    pca.continuous_servo[8].throttle = 0
     #for s in testArr:
         
     time.sleep(1)

@@ -13,13 +13,9 @@ BUFFER_SIZE = 1024
 clientSocket = socket.socket()
 clientSocket.connect((HOST, PORT))
 
-#takse input value from -1 to 1 and converts it to 0 to 255
+#placeholder for deadzone
 def joystickToInt(axis):
-    axis += 1.0
-    axis *= 128
-    if (axis > 255):
-        axis = 255 
-    return int (axis)
+    return axis
 
 # controller inpuut stuff
 run = True

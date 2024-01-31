@@ -48,6 +48,9 @@ def pcaScenario():
         pca.servo[i].angle=None #disable channel
         time.sleep(0.5)
 
+#setup
+init()
+
 
 while True:
     data = serverSocket.recv(BUFFER_SIZE).decode()

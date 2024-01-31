@@ -28,8 +28,7 @@ joysticks = []
 # waits until joystick is added
 # adds joystic to joystic array when plugged in 
 #
-
-        
+    
 while run:
     sendString = None
     for joystick in joysticks:

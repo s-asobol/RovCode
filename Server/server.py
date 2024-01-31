@@ -57,6 +57,6 @@ while True:
     os.system("clear")
     print(data)
     #pcaScenario()
-    pca.continuous_servo[8].throttle = testArr[0]
+    pca.continuous_servo[8].throttle = float(testArr[0])
     
     

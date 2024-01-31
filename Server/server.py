@@ -14,7 +14,7 @@ MAX_ANG  =[180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180,
 pca = ServoKit(channels=16)
 # function init 
 def init():
-        pca.servo[10].set_pulse_width_range(MIN_IMP[10] , MAX_IMP[10])
+        pca.servo[8].set_pulse_width_range(MIN_IMP[10] , MAX_IMP[10])
 
 HOST = "192.168.1.11"
 PORT = 5000

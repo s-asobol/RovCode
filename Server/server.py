@@ -6,7 +6,7 @@ from adafruit_servokit import ServoKit
 #Constants
 nbPCAServo=16 
 #Parameters
-MIN_IMP  =[500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500]
+MIN_IMP  =[500, 500, 500, 500, 500, 500, 500, 500, 00, 500, 500, 500, 500, 500, 500, 500]
 MAX_IMP  =[2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500]
 MIN_ANG  =[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 MAX_ANG  =[180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180]
@@ -15,6 +15,7 @@ pca = ServoKit(channels=16)
 # function init 
 def init():
     i = 8
+    print("survo inittialized!")
     pca.continuous_servo[i].set_pulse_width_range(MIN_IMP[i] , MAX_IMP[i])
 
 HOST = "192.168.1.11"

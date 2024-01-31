@@ -57,8 +57,8 @@ while True:
     os.system("clear")
     print(data)
     #pcaScenario()
-    pca.servo[8].angle = 0
-    time.sleep(3)
+    pca.servo[8]._pwm_out
+    time.sleep(10)
     pca.servo[8].angle = 100
     #for s in testArr:
         

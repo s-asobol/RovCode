@@ -6,8 +6,8 @@ from adafruit_servokit import ServoKit
 #Constants
 nbPCAServo=16 
 #Parameters
-MIN_IMP  =[500, 500, 500, 500, 500, 500, 500, 500, 00, 500, 500, 500, 500, 500, 500, 500]
-MAX_IMP  =[2500, 2500, 2500, 2500, 2500, 2500, 2500, 6500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500]
+MIN_IMP  =[500, 500, 500, 500, 500, 500, 500, 500, 00, 00, 500, 500, 500, 500, 500, 500]
+MAX_IMP  =[2500, 2500, 2500, 2500, 2500, 2500, 2500, 6500, 65535, 2500, 2500, 2500, 2500, 2500, 2500, 2500]
 MIN_ANG  =[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 MAX_ANG  =[180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180]
 #Objects
@@ -62,5 +62,9 @@ while True:
     print(data)
     #pcaScenario()
     pca.continuous_servo[8].throttle = float(testArr[0])
+    if(testArr[0] <= 0):
+        pca.continuous_servo[9].throttle = 1
+    else:
+        pca.continuous_servo[9].throttle = -1
     
     

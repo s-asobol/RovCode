@@ -59,7 +59,7 @@ while True:
     #pcaScenario()
     pca.servo[8]._pwm_out
     time.sleep(10)
-    pca.servo[8].angle = 100
+    pca.servo[8]._pwm = 0
     #for s in testArr:
         
     time.sleep(1)

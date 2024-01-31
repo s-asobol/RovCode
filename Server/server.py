@@ -14,8 +14,7 @@ MAX_ANG  =[180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180,
 pca = ServoKit(channels=16)
 # function init 
 def init():
-    for i in range(nbPCAServo):
-        pca.servo[i].set_pulse_width_range(MIN_IMP[i] , MAX_IMP[i])
+        pca.servo[10].set_pulse_width_range(MIN_IMP[10] , MAX_IMP[10])
 
 HOST = "192.168.1.11"
 PORT = 5000
@@ -48,7 +47,7 @@ def pcaScenario():
         pca.servo[i].angle=None #disable channel
         time.sleep(0.5)
 
-        
+
 while True:
     data = serverSocket.recv(BUFFER_SIZE).decode()
     testArr = data.split(",")
@@ -56,8 +55,10 @@ while True:
         data = f"LeftX: {testArr[0]}, LeftY: {testArr[1]}, RightX: {testArr[2]}, RightY: {testArr[3]}, leftTrigger: {testArr[4]}, RightTrigger: {testArr[5]}"
     os.system("clear")
     print(data)
-    pcaScenario()
-    
+    pca.servo[8].angle = 10
+    #pcaScenario()
+    time.sleep(3)
+    pca.servo[8].angle = 3000
     #for s in testArr:
         
     time.sleep(1)

@@ -15,6 +15,9 @@ clientSocket.connect((HOST, PORT))
 
 #placeholder for deadzone
 def joystickToInt(axis):
+    if (abs(axis) <= .01):
+        axis = 0
+    axis = axis**3
     return axis
 
 # controller inpuut stuff

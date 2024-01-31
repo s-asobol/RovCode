@@ -14,8 +14,8 @@ MAX_ANG  =[180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180,
 pca = ServoKit(channels=16)
 # function init 
 def init():
-    for i in range(nbPCAServo):
-        pca.servo[i].set_pulse_width_range(MIN_IMP[i] , MAX_IMP[i])
+    i = 8
+    pca.servo[i].set_pulse_width_range(MIN_IMP[i] , MAX_IMP[i])
 
 HOST = "192.168.1.11"
 PORT = 5000
@@ -56,7 +56,10 @@ while True:
         data = f"LeftX: {testArr[0]}, LeftY: {testArr[1]}, RightX: {testArr[2]}, RightY: {testArr[3]}, leftTrigger: {testArr[4]}, RightTrigger: {testArr[5]}"
     os.system("clear")
     print(data)
-    pcaScenario()
+    #pcaScenario()
+    pca.servo[8].angle = 0
+    time.sleep(3)
+    pca.servo[8].angle = 100
     #for s in testArr:
         
     time.sleep(1)

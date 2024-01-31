@@ -58,7 +58,7 @@ while True:
     pca.servo[8].angle = 10
     #pcaScenario()
     time.sleep(3)
-    pca.servo[8].angle = 3000
+    pca.servo[8].angle = 180
     #for s in testArr:
         
     time.sleep(1)

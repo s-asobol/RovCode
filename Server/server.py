@@ -61,10 +61,13 @@ while True:
     os.system("clear")
     print(data)
     #pcaScenario()
-    pca.continuous_servo[8].throttle = float(testArr[0])
-    if(testArr[0] <= 0):
+    
+
+    # set direction
+    if(float(testArr[0]) <= 0):
         pca.continuous_servo[9].throttle = 1
     else:
         pca.continuous_servo[9].throttle = -1
-    
-    
+
+
+    pca.continuous_servo[8].throttle = abs(float(testArr[0]))

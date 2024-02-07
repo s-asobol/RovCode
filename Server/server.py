@@ -69,11 +69,11 @@ while True:
     
 
     # set direction
-    """
+    
     if(float(testArr[0]) <= 0):
         pca.continuous_servo[9].throttle = 1
     else:
         pca.continuous_servo[9].throttle = -1
-    """
+    
 
-    pca.continuous_servo[8].throttle = testArr[0]
+    pca.continuous_servo[8].throttle = (testArr[0] + 1) % 2

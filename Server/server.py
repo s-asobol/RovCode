@@ -70,7 +70,7 @@ while True:
 
     # set direction
     
-    if(float(testArr[0]) <= 0):
+    if(float(testArr[0]) <= 1):
         pca.continuous_servo[9].throttle = 1
     else:
         pca.continuous_servo[9].throttle = -1
@@ -78,7 +78,7 @@ while True:
     if (testArr[0] < float(0.01)):
         testArr[0] = -1
     
-    throttle = abs(testArr[0])
+    throttle = testArr[0]
     print(throttle)
 
 

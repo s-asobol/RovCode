@@ -18,9 +18,12 @@ def preProcessJoy(axis):
     if (abs(axis) <= .01):
         axis = 0
     axis = axis**3
+    abs(axis)
+    axis = (((axis + 1) * (1 +1)) / (1 - 0)) + -1
     return axis
 
 # controller inpuut stuff
+
 run = True
 pygame.joystick.init()
 joysticks = []

@@ -75,5 +75,7 @@ while True:
     else:
         pca.continuous_servo[9].throttle = -1
     
+    throttle = abs(testArr[0])
+    print(throttle)
 
-    pca.continuous_servo[8].throttle = abs(testArr[0])
+    pca.continuous_servo[8].throttle = throttle

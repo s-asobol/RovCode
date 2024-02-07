@@ -49,6 +49,16 @@ def pcaScenario():
         pca.servo[i].angle=None #disable channel
         time.sleep(0.5)
 
+def preProcessJoy(axis):
+    if (abs(axis) <= .01):
+        axis = 0
+    axis = axis**3
+    axis = abs(axis)
+    OldRange = (1 - 0)  
+    NewRange = (2)  
+    NewValue = (((axis) * NewRange) / OldRange) + (-1)
+    return NewValue
+
 #setup
 init()
 
@@ -70,7 +80,7 @@ while True:
 
     # set direction
     
-    if(float(testArr[0]) <= 1):
+    if(float(testArr[0]) <= 0):
         pca.continuous_servo[9].throttle = 1
     else:
         pca.continuous_servo[9].throttle = -1
@@ -78,8 +88,9 @@ while True:
     if (testArr[0] < float(0.01)):
         testArr[0] = -1
     
-    throttle = testArr[0]
+    throttle = preProcessJoy(testArr[0])
     print(throttle)
 
 
     pca.continuous_servo[8].throttle = throttle
+    

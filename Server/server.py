@@ -53,7 +53,8 @@ def preProcessJoy(axis):
     if (abs(axis) <= .05):
         axis = 0
     axis = axis**3
-    axis = abs(axis)
+    if (axis <= 0):
+        axis *= float(-1.0)
     print("axs = " + str(axis))
     OldRange = (1 - 0)  
     NewRange = (2)  

@@ -50,8 +50,6 @@ def pcaScenario():
         time.sleep(0.5)
 
 def preProcessJoy(axis):
-    if (abs(axis) <= .05):
-        axis = 0
     axis = axis**3
     axis += 1.0
     print("axs = " + str(axis))

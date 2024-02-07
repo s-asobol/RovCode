@@ -82,8 +82,10 @@ while True:
     
     if(float(testArr[0]) <= 0):
         pca.continuous_servo[9].throttle = 1
+        print("Right")
     else:
         pca.continuous_servo[9].throttle = -1
+        print("left")
     
     if (testArr[0] < float(0.01)):
         testArr[0] = -1

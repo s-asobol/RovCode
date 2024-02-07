@@ -14,7 +14,7 @@ clientSocket = socket.socket()
 clientSocket.connect((HOST, PORT))
 
 #placeholder for deadzone
-def joystickToInt(axis):
+def preProcessJoy(axis):
     if (abs(axis) <= .01):
         axis = 0
     axis = axis**3
@@ -33,12 +33,12 @@ while run:
     sendString = None
     for joystick in joysticks:
     #read input from controller
-        LeftX = joystickToInt(joystick.get_axis(0))
-        LeftY = joystickToInt(joystick.get_axis(1))
-        RightX = joystickToInt(joystick.get_axis(2))
-        RightY = joystickToInt(joystick.get_axis(3))
-        LeftTrigger = joystickToInt(joystick.get_axis(4))
-        RightTrigger = joystickToInt(joystick.get_axis(5))
+        LeftX = preProcessJoy(joystick.get_axis(0))
+        LeftY = preProcessJoy(joystick.get_axis(1))
+        RightX = preProcessJoy(joystick.get_axis(2))
+        RightY = preProcessJoy(joystick.get_axis(3))
+        LeftTrigger = preProcessJoy(joystick.get_axis(4))
+        RightTrigger = preProcessJoy(joystick.get_axis(5))
         sendString = f"{LeftX},{LeftY},{RightX},{RightY},{LeftTrigger},{RightTrigger}"
     #makes sure the string is not null. Can happen on startup
     if sendString:

@@ -6,8 +6,8 @@ from adafruit_servokit import ServoKit
 #Constants
 nbPCAServo=16 
 #Parameters
-MIN_IMP  =[500, 500, 500, 500, 500, 500, 500, 500, 00, 00, 500, 500, 500, 500, 500, 500]
-MAX_IMP  =[2500, 2500, 2500, 2500, 2500, 2500, 2500, 6500, 65535, 2500, 2500, 2500, 2500, 2500, 2500, 2500]
+MIN_IMP  =[500, 500, 500, 500, 500, 500, 500, 500, 0, 00, 500, 500, 500, 500, 500, 500]
+MAX_IMP  =[2500, 2500, 2500, 2500, 2500, 2500, 2500, 3000, 6500, 2500, 2500, 2500, 2500, 2500, 2500, 2500]
 MIN_ANG  =[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 MAX_ANG  =[180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180]
 #Objects
@@ -59,6 +59,11 @@ while True:
     if (len(testArr) >= 6):
         data = f"LeftX: {testArr[0]}, LeftY: {testArr[1]}, RightX: {testArr[2]}, RightY: {testArr[3]}, leftTrigger: {testArr[4]}, RightTrigger: {testArr[5]}"
     os.system("clear")
+    #cast array vals to float
+    for i in range(len(testArr)):
+        testArr[i] = float(testArr[i])
+        
+    print(type(testArr[0]))
     print(data)
     #pcaScenario()
     
@@ -71,4 +76,4 @@ while True:
         pca.continuous_servo[9].throttle = -1
     """
 
-    pca.continuous_servo[8].throttle = float(testArr[0])
+    pca.continuous_servo[8].throttle = abs(float(testArr[0]))

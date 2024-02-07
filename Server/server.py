@@ -77,5 +77,6 @@ while True:
     
     throttle = abs(testArr[0])
     print(throttle)
+    time.sleep(.1)
 
     pca.continuous_servo[8].throttle = throttle

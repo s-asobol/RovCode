@@ -18,10 +18,11 @@ def preProcessJoy(axis):
     if (abs(axis) <= .01):
         axis = 0
     axis = axis**3
-    abs(axis)
-    axis = (((axis + 1) * (1 + 1)) / (1 - 0)) - 1
-    (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
-    return axis
+    axis = abs(axis)
+    OldRange = (1 - 0)  
+    NewRange = (2)  
+    NewValue = (((axis) * NewRange) / OldRange) + (-1)
+    return NewValue
 
 # controller inpuut stuff
 

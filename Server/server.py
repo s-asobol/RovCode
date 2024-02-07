@@ -82,4 +82,4 @@ while True:
     print(throttle)
 
 
-    #pca.continuous_servo[8].throttle = throttle
+    pca.continuous_servo[8].throttle = throttle

@@ -76,4 +76,4 @@ while True:
         pca.continuous_servo[9].throttle = -1
     
 
-    pca.continuous_servo[8].throttle = (testArr[0] + 1) % 1
+    pca.continuous_servo[8].throttle = abs(testArr[0])

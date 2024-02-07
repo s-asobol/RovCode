@@ -50,7 +50,9 @@ def pcaScenario():
         time.sleep(0.5)
 
 def preProcessJoy(axis):
+    print("axs = " + str(axis))
     axis = axis**3
+    print("axs = " + str(axis))
     axis += float(1.0)
     print("axs = " + str(axis))
     axis  = axis % float(1)

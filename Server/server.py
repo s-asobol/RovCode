@@ -54,6 +54,7 @@ def preProcessJoy(axis):
         axis = 0
     axis = axis**3
     axis += 1.0
+    print("axs = " + str(axis))
     axis  = axis % 1
     print("axs = " + str(axis))
     OldRange = (1 - 0)  

@@ -76,7 +76,7 @@ while True:
         pca.continuous_servo[9].throttle = -1
     
     if (testArr[0] < float(0.01)):
-        testArr[0] = 0
+        testArr[0] = -1
     
     throttle = abs(testArr[0])
     print(throttle)

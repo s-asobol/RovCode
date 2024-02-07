@@ -77,6 +77,7 @@ while True:
         testArr[i] = float(testArr[i])
         
     print(type(testArr[0]))
+    print(testArr[0])
     print(data)
     #pcaScenario()
     

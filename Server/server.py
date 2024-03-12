@@ -8,7 +8,7 @@ NUM_MOTORS=16
 
 # PWM ranges for each motor
 MIN_IMP  =[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-MAX_IMP  =[6500,6500,6500,6500,6500,6500,6500,6500,6500,6500,6500,6500,6500,6500,6500,6500]
+MAX_IMP  =[19950,6500,19950,6500,19950,6500,19950,6500,19950,6500,19950,6500,19950,6500,19950,6500]
 
 HOST = "192.168.1.11"
 PORT = 5000
@@ -34,18 +34,15 @@ print(f"server accepted connection from {clientAdress}")
 
 # Initializes the PWM range for each motor
 def init():
-    i = 8
-    pca.continuous_servo[i].set_pulse_width_range(MIN_IMP[i] , MAX_IMP[i])
+    for i in range(16):
+        pca.continuous_servo[i].set_pulse_width_range(MIN_IMP[i] , MAX_IMP[i])
 
 init()
 
-print("before loop")
 # Main loop
 while True:
-    print("in loop")
     # Receive a packet of data and decode it to a string
     data = serverSocket.recv(BUFFER_SIZE).decode()
-    print("recieved")
     # Split the string
     testArr = data.split(",")
 
@@ -77,6 +74,8 @@ while True:
 
         # Set the motor's direction bit based off the sign
         if(signArray[i] <= 0):
-            pca.continuous_servo[SIGN_MAPPING[i]].throttle = 1
+            # pca.continuous_servo[SIGN_MAPPING[i]].throttle = 1
+            pca._pca.channels[SIGN_MAPPING[i]].duty_cycle = 0x0000
         else:
-            pca.continuous_servo[SIGN_MAPPING[i]].throttle = -1
+            # pca.continuous_servo[SIGN_MAPPING[i]].throttle = -1
+            pca._pca.channels[SIGN_MAPPING[i]].duty_cycle = 0xFFFF

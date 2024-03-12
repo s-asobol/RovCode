@@ -49,7 +49,7 @@ def preProcessTrigger(axis):
     if axis < DEADZONE:
         axis = 0
     
-    return axis
+    return axis                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 
 # Returns a matrix normalized so the maximum value in the matrix is 1
 def normalizeMatrix(ary):
@@ -69,12 +69,12 @@ def normalizeMatrix(ary):
 # RightY controls up/down movement
 def pufferfishControl(LeftX, LeftY, RightY):
     # Declaring the numpy array that will be used for the thrust vectors applied to the motors
-    thrustMatrix = np.array(len(PROPORTIONAL_MATRIX[0]))
+    thrustMatrix = np.array([0,0,0])
 
     # Using list comprehension, multiply selected rows in the proportional matrix by the controller input and sum the vectors togethor
-    thrustMatrix = thrustMatrix + [x * LeftX for x in PROPORTIONAL_MATRIX[5]]       # Yaw
     thrustMatrix = thrustMatrix + [x * LeftY for x in PROPORTIONAL_MATRIX[0]]       # Forward/backwards
     thrustMatrix = thrustMatrix + [x * RightY for x in PROPORTIONAL_MATRIX[2]]      # Up/down
+    thrustMatrix = thrustMatrix + [x * LeftX for x in PROPORTIONAL_MATRIX[5]]       # Yaw
 
     # Normalize the vector
     thrustMatrix = normalizeMatrix(thrustMatrix)
@@ -92,7 +92,7 @@ def pufferfishControl(LeftX, LeftY, RightY):
 
     # Take the absolute value of each element to make the value array for the motor controller
     for elem in thrustMatrix:
-        valueArray.append(abs(elem))
+        valueArray.append(abs(elem) *2 - 1)
 
     # Pad the arrays with 0 if there are fewer than 8 motors
     signArray = np.pad(signArray, (0, 8 - len(signArray)), constant_values = 0)
@@ -100,7 +100,6 @@ def pufferfishControl(LeftX, LeftY, RightY):
 
     # Concatenate the sign and value arrays into a string for transmission
     sendString = ','.join([str(elem) for elem in (signArray.tolist() + valueArray.tolist())])
-    print(sendString)
     return sendString
 
 
@@ -140,6 +139,7 @@ while run:
 
         # Process the inputs for proportional control
         sendString = pufferfishControl(LeftX, LeftY, RightY)
+
     # Make sure the string is not null, this can happen on startup
     if sendString:
         clientSocket.sendall(sendString.encode())

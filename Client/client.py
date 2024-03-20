@@ -22,12 +22,13 @@ DEADZONE = 0.01
 # Row 5: Y rotation (pitch)
 # Row 6: Z rotation (yaw)
 
-PROPORTIONAL_MATRIX =  [[1, 1, 0],
-                        [0, 0, 0],
-                        [0, 0, 1],
-                        [0, 0, 0],
-                        [0, 0, 0],
-                        [1, -1, 0]]
+import numpy as np
+
+PROPORTIONAL_MATRIX = np.array(  [[0.866025, 0, 0.866025, 0.866025, 0, 0.866025],
+                                    [0.5, 0, -0.5, 0.5, 0, -0.5],
+                                    [0, -1, 0, 0, 1, 0],
+                                    [0, -0.3048, 0, 0, -0.1778, 0],
+                                    [-0.29368, 0., 0.293679, 0.293679, 0, -0.29368]])
 
 # Pre-process the joystick input to apply a deadzone, as well as determine the direction
 def preProcessJoystick(axis):
@@ -40,13 +41,18 @@ def preProcessJoystick(axis):
 
     return axis
 
-# Pre-process trigger to apply a deadzone, as well as map from range [-1,1] to range [0,1]
-def preProcessTrigger(axis):
-    axis = axis + 1
-    axis = axis / 2
+# Pre-process both triggers to affect one axis. LeftTrigger: negative, RightTrigger: Positive
+def preProcessTriggers(LeftTrigger, RightTrigger):
+    LeftTrigger = LeftTrigger + 1
+    LeftTrigger = LeftTrigger / 2
+
+    RightTrigger = RightTrigger + 1
+    RightTrigger = RightTrigger / 2
+
+    axis = RightTrigger - LeftTrigger
 
     # Apply deadzone
-    if axis < DEADZONE:
+    if abs(axis) < DEADZONE:
         axis = 0
     
     return axis                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
@@ -103,6 +109,76 @@ def pufferfishControl(LeftX, LeftY, RightY):
     return sendString
 
 
+def competitionControl(LeftX, LeftY, RightX, RightY,Triggers, LeftBumper, RightBumper):
+    print("\nM:\n", PROPORTIONAL_MATRIX)
+
+    # Calculate the transpose of M, only needed when DoF != num motors
+    MT = np.transpose(PROPORTIONAL_MATRIX)
+    print("\nMT:\n", MT)
+
+    # Calculate M5 = MT * M
+    M5 = np.matmul(PROPORTIONAL_MATRIX, MT)
+    print("\nM5:\n", M5)
+
+    # Define pilot inputs (assuming)
+    # pilot_inputs = np.array([LeftY, RightY, LeftX])
+    pilot_inputs = np.array([   [LeftY, 0, 0, 0, 0],
+                                [0, RightY, 0, 0, 0],
+                                [0, 0, LeftX, 0, 0],
+                                [0, 0, 0, RightX, 0],
+                                [0, 0, 0, 0, Triggers ]])
+
+    # Calculate Pilot Equivalent (PE5)
+    PE5 = np.matmul(np.sum(np.abs(PROPORTIONAL_MATRIX), axis=1), pilot_inputs)
+    print("\nPE5:\n", PE5)
+
+    # Solve for R5 using M5 * R5 = PE5
+    R5 = np.linalg.solve(M5, PE5)
+    print("\nR5:\n", R5)
+
+    # Map R5 to thrusters (R6 = MT * R5)
+    R6 = np.dot(MT, R5)
+
+    # Normalize R6
+    thrustMatrix = normalizeMatrix(R6)
+
+    print("Resulting thruster values (unnormalized):", R6)
+    print("Resulting thruster values (normalized):", thrustMatrix)
+
+    # Declare the arrays for extracting the sign and value
+    signArray = []
+    valueArray = []
+
+    # Pull the sign out from the matrix to make the sign array for the motor controller
+    for elem in thrustMatrix:
+        if elem < 0:
+            signArray.append(1)
+        else:
+            signArray.append(0)
+
+    # Take the absolute value of each element to make the value array for the motor controller
+    for elem in thrustMatrix:
+        valueArray.append(abs(elem) *2 - 1)
+
+
+    #add sign and value of the bumpers to the sign and value arrays to control the claw.
+    if(RightBumper == 1 and LeftBumper == 0):
+        signArray.append(1)
+        valueArray.append(2)
+    elif(RightBumper == 1 and LeftBumper == 0):
+        signArray.append(0)
+        valueArray.append(2)
+    else:
+        valueArray.append(0)
+
+    # Pad the arrays with 0 if there are fewer than 8 motors
+    signArray = np.pad(signArray, (0, 8 - len(signArray)), constant_values = 0)
+    valueArray = np.pad(valueArray, (0, 8 - len(valueArray)), constant_values = 0)
+
+    # Concatenate the sign and value arrays into a string for transmission
+    sendString = ','.join([str(elem) for elem in (signArray.tolist() + valueArray.tolist())])
+    return sendString
+
 # Create a socket and connect to the Raspberry Pi
 clientSocket = socket.socket()
 clientSocket.connect((HOST, PORT))
@@ -134,11 +210,15 @@ while run:
         LeftY = preProcessJoystick(joystick.get_axis(1))        # Left joystick Y
         RightX = preProcessJoystick(joystick.get_axis(2))       # Right joystick X
         RightY = preProcessJoystick(joystick.get_axis(3))       # Right joystick Y
-        LeftTrigger = preProcessTrigger(joystick.get_axis(4))
-        RightTrigger = preProcessTrigger(joystick.get_axis(5))
+        LeftTrigger = joystick.get_axis(4)
+        RightTrigger = joystick.get_axis(5)
+        LeftBumper = joystick.get_button(4)
+        RightBumper = joystick.get_button(5)
 
+        #Porcess Triggers 
+        Triggers = preProcessTriggers(LeftTrigger, RightTrigger)
         # Process the inputs for proportional control
-        sendString = pufferfishControl(LeftX, LeftY, RightY)
+        sendString = competitionControl(LeftX, LeftY, RightX, RightY, Triggers, LeftBumper, RightBumper)
 
     # Make sure the string is not null, this can happen on startup
     if sendString:

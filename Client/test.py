@@ -4,9 +4,7 @@ import socket
 import time
 import numpy as np
 
-# IP Address and port on Raspberry Pi
-HOST = "192.168.1.11"
-PORT = 5000
+
 
 DEADZONE = 0.01
 
@@ -30,11 +28,11 @@ PROPORTIONAL_MATRIX = np.array(  [[0.866025, 0, 0.866025, 0.866025, 0, 0.866025]
                                     [0, -0.3048, 0, 0, -0.1778, 0],
                                     [-0.29368, 0., 0.293679, 0.293679, 0, -0.29368]])
 '''
-PROPORTIONAL_MATRIX = np.array(  [[1, 0, 0, 0, 0, 0],
-                                    [1, 0, 0, 0, 1, 1],
-                                    [1, 0, 0, 0, 0, 0],
-                                    [0, 0, 0, 0, 0, 0],
-                                    [0, 0, 0, 0, 0, 0]])
+PROPORTIONAL_MATRIX = np.array(  [[0.866025, 0.866025, 0, 0.866025, 0.866025, 0],
+                                    [0, 0, 0.5, 0, 0, 0.5],
+                                    [0, 0, 0, 0, 1, 0],
+                                    [0, -0.3048, 0, 0, -0.1778, 0],
+                                    [-0.29368, 0., 0.293679, 0.293679, 0, -0.29368]])
 '''
 # Pre-process the joystick input to apply a deadzone, as well as determine the direction
 def preProcessJoystick(axis):
@@ -130,9 +128,9 @@ def competitionControl(LeftX, LeftY, RightX, RightY,Triggers, LeftBumper, RightB
     # pilot_inputs = np.array([LeftY, RightY, LeftX])
     pilot_inputs = np.array([   [LeftY, 0, 0, 0, 0],
                                 [0, RightY, 0, 0, 0],
-                                [0, 0, LeftX, 0, 0],
+                                [0, 0, LeftY, 0, 0],
                                 [0, 0, 0, RightX, 0],
-                                [0, 0, 0, 0, Triggers ]])
+                                [0, 0, 0, 0, Triggers]])
 
     # Calculate Pilot Equivalent (PE5)
     PE5 = np.matmul(np.sum(np.abs(PROPORTIONAL_MATRIX), axis=1), pilot_inputs)
@@ -185,9 +183,6 @@ def competitionControl(LeftX, LeftY, RightX, RightY,Triggers, LeftBumper, RightB
     sendString = ','.join([str(elem) for elem in (signArray.tolist() + valueArray.tolist())])
     return sendString
 
-# Create a socket and connect to the Raspberry Pi
-clientSocket = socket.socket()
-clientSocket.connect((HOST, PORT))
 
 # Initialize pygame and the joysticks array
 pygame.init()
@@ -228,7 +223,7 @@ while run:
 
     # Make sure the string is not null, this can happen on startup
     if sendString:
-        clientSocket.sendall(sendString.encode())
+        print("sendString ", sendString)
 
     # Sleep for a bit to not overwhelm Raspberry Pi
-    time.sleep(.1)
+    time.sleep(5)

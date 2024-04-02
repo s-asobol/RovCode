@@ -75,45 +75,21 @@ def normalizeMatrix(ary):
     # Divide each element by the max value
     return [x / max for x in ary]
 
-# Take the input from the controller and output throttle and sign for each motor
-# LeftY controls forward/backward movement
-# LeftX controls yaw
-# RightY controls up/down movement
-def pufferfishControl(LeftX, LeftY, RightY):
-    # Declaring the numpy array that will be used for the thrust vectors applied to the motors
-    thrustMatrix = np.array([0,0,0])
+def sumOfRows(matrix):
+    returnArr = np.array([[0.0,0,0,0,0],
+                        [0,0,0,0,0],
+                        [0,0,0,0,0],
+                        [0,0,0,0,0],
+                        [0,0,0,0,0]])
 
-    # Using list comprehension, multiply selected rows in the proportional matrix by the controller input and sum the vectors togethor
-    thrustMatrix = thrustMatrix + [x * LeftY for x in PROPORTIONAL_MATRIX[0]]       # Forward/backwards
-    thrustMatrix = thrustMatrix + [x * RightY for x in PROPORTIONAL_MATRIX[2]]      # Up/down
-    thrustMatrix = thrustMatrix + [x * LeftX for x in PROPORTIONAL_MATRIX[5]]       # Yaw
-
-    # Normalize the vector
-    thrustMatrix = normalizeMatrix(thrustMatrix)
-
-    # Declare the arrays for extracting the sign and value
-    signArray = []
-    valueArray = []
-
-    # Pull the sign out from the matrix to make the sign array for the motor controller
-    for elem in thrustMatrix:
-        if elem < 0:
-            signArray.append(1)
-        else:
-            signArray.append(0)
-
-    # Take the absolute value of each element to make the value array for the motor controller
-    for elem in thrustMatrix:
-        valueArray.append(abs(elem) *2 - 1)
-
-    # Pad the arrays with 0 if there are fewer than 8 motors
-    signArray = np.pad(signArray, (0, 8 - len(signArray)), constant_values = 0)
-    valueArray = np.pad(valueArray, (0, 8 - len(valueArray)), constant_values = 0)
-
-    # Concatenate the sign and value arrays into a string for transmission
-    sendString = ','.join([str(elem) for elem in (signArray.tolist() + valueArray.tolist())])
-    return sendString
-
+    i = 0
+    for elem in matrix:
+        sum = 0
+        for number in elem:
+            sum += abs(number)
+        returnArr[i][i] = float(sum)
+        i += 1
+    return returnArr
 
 def competitionControl(LeftX, LeftY, RightX, RightY,Triggers, LeftBumper, RightBumper):
     print("\nM:\n", PROPORTIONAL_MATRIX)
@@ -122,33 +98,43 @@ def competitionControl(LeftX, LeftY, RightX, RightY,Triggers, LeftBumper, RightB
     MT = np.transpose(PROPORTIONAL_MATRIX)
     print("\nMT:\n", MT)
 
-    # Calculate M5 = MT * M
-    M5 = np.matmul(PROPORTIONAL_MATRIX, MT)
-    print("\nM5:\n", M5)
+    # Calculate M5 = M * MT
+    MS = np.matmul(PROPORTIONAL_MATRIX, MT)
+    MS = MS.round(decimals= 5, out= None)
+    print("\nM5:\n", MS)
 
-    # Define pilot inputs (assuming)
-    # pilot_inputs = np.array([LeftY, RightY, LeftX])
-    pilot_inputs = np.array([   [LeftY, 0, 0, 0, 0],
-                                [0, RightY, 0, 0, 0],
-                                [0, 0, LeftX, 0, 0],
-                                [0, 0, 0, RightX, 0],
-                                [0, 0, 0, 0, Triggers ]])
+    MSI = np.linalg.inv(MS)
+    print("\nMSI:\n", MSI)
 
-    # Calculate Pilot Equivalent (PE5)
-    PE5 = np.matmul(np.sum(np.abs(PROPORTIONAL_MATRIX), axis=1), pilot_inputs)
-    print("\nPE5:\n", PE5)
+    rov_A = sumOfRows(PROPORTIONAL_MATRIX)
+    print("\nrov_A:\n", rov_A)
 
-    # Solve for R5 using M5 * R5 = PE5
-    R5 = np.linalg.solve(M5, PE5)
+    PI5 = np.array([[LeftY], 
+                   [LeftX],
+                    [Triggers],
+                    [RightY],
+                    [RightX]])
+    
+    print("\nPI5:\n", PI5)
+
+    rov_s = np.matmul(rov_A, PI5)
+
+    
+    print("rov_s", rov_s)
+
+    R5 = np.matmul(MSI, rov_s)
     print("\nR5:\n", R5)
+    R6 = np.matmul(MT, R5)
+    print("\nR6:\n", R6)
 
-    # Map R5 to thrusters (R6 = MT * R5)
-    R6 = np.dot(MT, R5)
-
+    R6 = np.transpose(R6)
+    R6= R6.round(decimals= 5, out= None)
+    print("\nR6:\n", R6)
     # Normalize R6
-    thrustMatrix = normalizeMatrix(R6)
-
-    print("Resulting thruster values (unnormalized):", R6)
+    #thrustMatrix = normalizeMatrix(R6)
+    thrustMatrix = R6[0]
+    print("\nthruster:\n", thrustMatrix)
+    thrustMatrix = normalizeMatrix(thrustMatrix)
     print("Resulting thruster values (normalized):", thrustMatrix)
 
     # Declare the arrays for extracting the sign and value
@@ -157,7 +143,7 @@ def competitionControl(LeftX, LeftY, RightX, RightY,Triggers, LeftBumper, RightB
 
     # Pull the sign out from the matrix to make the sign array for the motor controller
     for elem in thrustMatrix:
-        if elem < 0:
+        if elem.any() < 0:
             signArray.append(1)
         else:
             signArray.append(0)
@@ -213,7 +199,7 @@ while run:
     for joystick in joysticks:
         # Read input from controller
         LeftX = preProcessJoystick(joystick.get_axis(0))        # Left joystick X
-        LeftY = preProcessJoystick(joystick.get_axis(1))        # Left joystick Y
+        LeftY = -1 * preProcessJoystick(joystick.get_axis(1))        # Left joystick Y
         RightX = preProcessJoystick(joystick.get_axis(2))       # Right joystick X
         RightY = preProcessJoystick(joystick.get_axis(3))       # Right joystick Y
         LeftTrigger = joystick.get_axis(4)

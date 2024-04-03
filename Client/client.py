@@ -23,19 +23,19 @@ DEADZONE = 0.01
 # Row 6: Z rotation (yaw)
 
 import numpy as np
-
+'''
 PROPORTIONAL_MATRIX = np.array(  [[0.866025, 0, 0.866025, 0.866025, 0, 0.866025],
                                     [0.5, 0, -0.5, 0.5, 0, -0.5],
                                     [0, 0, 0, 0, 1, 0],
                                     [0, -0.3048, 0, 0, -0.1778, 0],
                                     [-0.29368, 0., 0.293679, 0.293679, 0, -0.29368]])
 '''
-PROPORTIONAL_MATRIX = np.array(  [[1, 0, 0, 0, 0, 0],
-                                    [1, 0, 0, 0, 1, 1],
-                                    [1, 0, 0, 0, 0, 0],
-                                    [0, 0, 0, 0, 0, 0],
-                                    [0, 0, 0, 0, 0, 0]])
-'''
+PROPORTIONAL_MATRIX = np.array(  [[0.866025, 0.866025, 0, 0.866025, 0.866025, 0],
+                                    [0.5, 0.5, 0, 0.5, .5, 0],
+                                    [0, 0, 1, 0, 0, 1],
+                                    [0, -0.3048, 0, 0, -0.1778, 0],
+                                    [-0.29368, 0., 0.293679, 0.293679, 0, -0.29368]])
+
 # Pre-process the joystick input to apply a deadzone, as well as determine the direction
 def preProcessJoystick(axis):
     # Cube the analog axis value, this should allow for better fine motor control
@@ -158,10 +158,10 @@ def competitionControl(LeftX, LeftY, RightX, RightY,Triggers, LeftBumper, RightB
         signArray.append(1)
         valueArray.append(1)
     elif(LeftBumper == 1 and RightBumper == 0):
-        signArray.append(1)
+        signArray.append(0)
         valueArray.append(1)
     else:
-        valueArray.append(0)
+        valueArray.append(-1)
 
     # Pad the arrays with 0 if there are fewer than 8 motors
     signArray = np.pad(signArray, (0, 8 - len(signArray)), constant_values = 0)

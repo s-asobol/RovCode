@@ -39,6 +39,27 @@ def init():
 
 init()
 
+#Temp Sensor Code
+def sensor():
+    for i in os.listdir('/sys/bus/w1/devices'):
+        if i != 'w1_bus_master1':
+            ds18b20 = i
+    return ds18b20
+
+def read(ds18b20):
+    location = 'sys/bus/w1/devices/' + ds18b20 + '/w1_slave'
+    tfile = open(location)
+    text = tfile.read()
+    secondline = text.split('\n')[1]
+    temperaturedata = secondline.split(' ')[9]
+    temperature = float(temperaturedata[2:])
+    celsius = temperature / 1000
+    feranheit = (celsius * 1.8) + 32
+    return celsius, feranheit
+
+sensorName = sensor()
+while True:
+    print("Current Temp in Celcius", read(sensorName)[0])
 # Main loop
 while True:
     # Receive a packet of data and decode it to a string
@@ -66,7 +87,7 @@ while True:
     os.system("clear")
     print(valueArray)
     print(signArray)
-
+    print("Current Temp in Celcius", read(sensorName)[0])
     # Loop through the array and apply the input to the motor
     for i in range(8):
         # Set the motor's throttle

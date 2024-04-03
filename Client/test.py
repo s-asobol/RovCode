@@ -172,9 +172,10 @@ def competitionControl(LeftX, LeftY, RightX, RightY,Triggers, LeftBumper, RightB
     signArray = []
     valueArray = []
 
+    print("Rersulting sing array", signArray)
     # Pull the sign out from the matrix to make the sign array for the motor controller
     for elem in thrustMatrix:
-        if elem.any() < 0:
+        if elem < 0:
             signArray.append(1)
         else:
             signArray.append(0)
@@ -186,11 +187,11 @@ def competitionControl(LeftX, LeftY, RightX, RightY,Triggers, LeftBumper, RightB
 
     #add sign and value of the bumpers to the sign and value arrays to control the claw.
     if(RightBumper == 1 and LeftBumper == 0):
-        signArray.append(1)
-        valueArray.append(2)
-    elif(RightBumper == 1 and LeftBumper == 0):
         signArray.append(0)
-        valueArray.append(2)
+        valueArray.append(1)
+    elif(LeftBumper == 1 and RightBumper == 0):
+        signArray.append(1)
+        valueArray.append(1)
     else:
         valueArray.append(0)
 
@@ -236,7 +237,7 @@ while run:
         LeftBumper = joystick.get_button(4)
         RightBumper = joystick.get_button(5)
 
-        print("inputs", LeftY)
+        print("inputs", LeftBumper)
         #Porcess Triggers 
         Triggers = preProcessTriggers(LeftTrigger, RightTrigger)
         # Process the inputs for proportional control

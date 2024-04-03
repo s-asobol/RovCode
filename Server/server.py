@@ -58,9 +58,8 @@ def read(ds18b20):
     return celsius, feranheit
 
 sensorName = sensor()
-while True:
-    print("Current Temp in Celcius", read(sensorName)[0])
-# Main loop
+
+# Main loopw
 while True:
     # Receive a packet of data and decode it to a string
     data = serverSocket.recv(BUFFER_SIZE).decode()

@@ -156,10 +156,10 @@ def competitionControl(LeftX, LeftY, RightX, RightY,Triggers, LeftBumper, RightB
     #add sign and value of the bumpers to the sign and value arrays to control the claw.
     if(RightBumper == 1 and LeftBumper == 0):
         signArray.append(1)
-        valueArray.append(2)
-    elif(RightBumper == 1 and LeftBumper == 0):
-        signArray.append(0)
-        valueArray.append(2)
+        valueArray.append(1)
+    elif(LeftBumper == 1 and RightBumper == 0):
+        signArray.append(1)
+        valueArray.append(1)
     else:
         valueArray.append(0)
 
@@ -211,6 +211,7 @@ while run:
         Triggers = preProcessTriggers(LeftTrigger, RightTrigger)
         # Process the inputs for proportional control
         sendString = competitionControl(LeftX, LeftY, RightX, RightY, Triggers, LeftBumper, RightBumper)
+        print("send string ", sendString)
 
     # Make sure the string is not null, this can happen on startup
     if sendString:
